@@ -11,9 +11,14 @@ export async function GET(req) {
     query
   };
 
-  const combinedString = JSON.stringify(combined, null, 2);
+  const combinedString = JSON.stringify(combined);
 
-  return new NextResponse(combinedString, {
+  // Wrap the combinedString in the desired format
+  const response = {
+    message: combinedString
+  };
+
+  return new NextResponse(JSON.stringify(response), {
     status: 200,
     headers: { 'Content-Type': 'application/json' }
   });
@@ -29,9 +34,14 @@ export async function POST(req) {
     body
   };
 
-  const combinedString = JSON.stringify(combined, null, 2); 
+  const combinedString = JSON.stringify(combined);
 
-  return new NextResponse(combinedString, {
+  // Wrap the combinedString in the desired format
+  const response = {
+    message: combinedString
+  };
+
+  return new NextResponse(JSON.stringify(response), {
     status: 200,
     headers: { 'Content-Type': 'application/json' }
   });

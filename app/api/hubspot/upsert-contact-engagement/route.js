@@ -10,7 +10,6 @@ const headers = {
   Authorization: `Bearer ${accessToken}`,
   'Content-Type': 'application/json',
 };
-const marketingContactStatus = true;
 
 const apiUrlCreate = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create';
 const apiUrlUpdate = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update';
@@ -54,8 +53,8 @@ const searchAndUpdateContactByEmailOrPhone = async (email = null, phone = null) 
     limit: 2, // Return up to 2 contacts to handle duplicates
     after: '0',
     sorts: ['hs_object_id'],
-    properties: ['hs_object_id', 'lifecyclestage','createdate','hs_lastmodifieddate',],
-    properties: ['hs_object_id', 'campaign', 'all_campaigns', 'hs_marketable_status', 'lifecyclestage','hs_legal_basis','old_hs_legal_basis','themis_consent_status','createdate','hs_lastmodifieddate',],
+    // properties: ['hs_object_id', 'lifecyclestage','createdate','hs_lastmodifieddate',],
+    properties: ['hs_object_id', 'campaign', 'all_campaigns', 'hs_marketable_status', 'lifecyclestage','hs_legal_basis','old_hs_legal_basis','themis_consent_status','createdate','hs_lastmodifieddate','ic_cc_email','open_account_channel'],
     filterGroups: filters,
   };
 
@@ -84,15 +83,17 @@ const searchAndUpdateContactByEmailOrPhone = async (email = null, phone = null) 
   }
 };
 
-const createUser = async (email = null, phone = null, customerStatus = null, campaign) => {
+const createUser = async (email = null, phone = null, customerStatus = null, campaign, icCcEmail, openAccountChannel) => {
 
   let properties = {
     campaign: campaign,
     lifecyclestage: customerStatus,
-    hs_marketable_status: marketingContactStatus,
+    hs_marketable_status: "true",
     themis_consent_status: "Success",
     themis_update_status: "New Consent",
-    hs_legal_basis: "Freely given consent from contact"
+    hs_legal_basis: "Freely given consent from contact",
+    ic_cc_email: icCcEmail,
+    open_account_channel: openAccountChannel
   };
 
   if (phone) {
@@ -137,21 +138,45 @@ const createUser = async (email = null, phone = null, customerStatus = null, cam
   }
 };
 
-const updateUser = async (contactId, email, phone, customerStatus, campaign) => {
+const updateUser = async (contactId, email = null, phone = null, customerStatus = null, campaign, icCcEmail = null, openAccountChannel = null) => {
+  let properties = {
+    campaign: campaign,
+  };
+
+  if (phone) {
+    properties.phone = phone;
+  }
+
+  if (email) {
+    properties.email = email;
+  }
+
+  if (icCcEmail) {
+    properties.ic_cc_email = icCcEmail;
+  }
+
+  if (openAccountChannel) {
+    properties.open_account_channel = openAccountChannel;
+  }
+
+  let lifecyclestage = "subscriber";
+  if (customerStatus) {
+    if (customerStatus === 'Member') {
+      lifecyclestage = "249323405";
+    } else if (customerStatus === 'Customer') {
+      lifecyclestage = "customer";
+    } else if (customerStatus === 'Investor') {
+      lifecyclestage = "249313422";
+    }
+  }
+
+  properties.lifecyclestage = lifecyclestage;
+
   const contactPayload = {
     inputs: [
       {
         id: contactId,
-        properties: {
-          campaign: campaign,
-          hs_marketable_status: marketingContactStatus,
-          themis_consent_status: "Success",
-          themis_update_status: "New Consent",
-          hs_legal_basis: "Freely given consent from contact",
-          phone: phone,
-          email: email,
-          lifecyclestage: customerStatus,
-        },
+        properties: properties,
         updatedAt: `${moment().format('YYYY-MM-DD')}`,
       },
     ],
@@ -188,7 +213,7 @@ const createEngagementTypeNote = async (contactId, action = null, campaign) => {
   }
 };
 
-const apiSyncDataContactEngagement = async (email, phone, customerStatus, action, campaign) => {
+const apiSyncDataContactEngagement = async (email, phone, customerStatus, action, campaign, icCcEmail, openAccountChannel) => {
   try {
     if ((!email && !phone) || !campaign) {
       console.log('========= BAD Request =========');
@@ -198,9 +223,9 @@ const apiSyncDataContactEngagement = async (email, phone, customerStatus, action
     let contactId = await searchAndUpdateContactByEmailOrPhone(email, phone);
 
     if (contactId) {
-      await updateUser(contactId, email, phone, customerStatus, campaign);
+      await updateUser(contactId, email, phone, customerStatus, campaign, icCcEmail, openAccountChannel);
     } else {
-      contactId = await createUser(email, phone, customerStatus, campaign);
+      contactId = await createUser(email, phone, customerStatus, campaign, icCcEmail, openAccountChannel);
     }
 
     await createEngagementTypeNote(contactId, action, campaign);
@@ -212,9 +237,9 @@ const apiSyncDataContactEngagement = async (email, phone, customerStatus, action
 // API route handler using NextResponse
 export async function POST(request) {
   try {
-    const { email, phone, customerStatus, action, campaign } = await request.json();  // Parse the incoming request body
+    const { email, phone, customerStatus, action, campaign, icCcEmail, openAccountChannel } = await request.json();  // Parse the incoming request body
 
-    await apiSyncDataContactEngagement(email, phone, customerStatus, action, campaign);
+    await apiSyncDataContactEngagement(email, phone, customerStatus, action, campaign, icCcEmail, openAccountChannel);
 
     return NextResponse.json({ message: 'Success' }, { status: 200 });
   } catch (error) {

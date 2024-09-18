@@ -6,7 +6,7 @@ export async function GET() {
   const flexMessage = {
     drMarketData : {
 
-    stockName_1: "GOLD19",
+    symbol_1: "GOLD19",
     displayNewImage_1: "",
     displayValue_1: "18.90",
     displayChange_1: "+ 1.07 %",
@@ -14,7 +14,7 @@ export async function GET() {
     displayBid_1: "18.90",
     displayAsk_1: "19.10",
 
-    stockName_2: "SMFG19",
+    symbol_2: "SMFG19",
     displayNewImage_2: "",
     displayValue_2: "18.90",
     displayChange_2: "+ 1.07 %",
@@ -22,7 +22,7 @@ export async function GET() {
     displayBid_2: "18.90",
     displayAsk_2: "19.10",
 
-    stockName_3: "VENTURE19",
+    symbol_3: "VENTURE19",
     displayNewImage_3: "",
     displayValue_3: "18.90",
     displayChange_3: "+ 1.07 %",
@@ -30,7 +30,7 @@ export async function GET() {
     displayBid_3: "18.90",
     displayAsk_3: "19.10",
 
-    stockName_4: "STEG19",
+    symbol_4: "STEG19",
     displayNewImage_4: "",
     displayValue_4: "18.90",
     displayChange_4: "+ 1.07 %",
@@ -38,7 +38,7 @@ export async function GET() {
     displayBid_4: "18.90",
     displayAsk_4: "19.10",
 
-    stockName_5: "SIA19",
+    symbol_5: "SIA19",
     displayNewImage_5: "",
     displayValue_5: "18.90",
     displayChange_5: "+ 1.07 %",
@@ -46,7 +46,7 @@ export async function GET() {
     displayBid_5: "18.90",
     displayAsk_5: "19.10",
 
-    stockName_6: "NINTENDO19",
+    symbol_6: "NINTENDO19",
     displayNewImage_6: "",
     displayValue_6: "18.90",
     displayChange_6: "+ 1.07 %",
@@ -54,7 +54,7 @@ export async function GET() {
     displayBid_6: "18.90",
     displayAsk_6: "19.10",
     
-    stockName_7: "INDIAESG19",
+    symbol_7: "INDIAESG19",
     displayNewImage_7: "",
     displayValue_7: "18.90",
     displayChange_7: "+ 1.07 %",
@@ -62,7 +62,7 @@ export async function GET() {
     displayBid_7: "18.90",
     displayAsk_7: "19.10",
     
-    stockName_8: "UOB19",
+    symbol_8: "UOB19",
     displayNewImage_8: "https://img2.pic.in.th/pic/New8946469a7400e5eb.png",
     displayValue_8: "18.90",
     displayChange_8: "+ 1.07 %",
@@ -70,7 +70,7 @@ export async function GET() {
     displayBid_8: "18.90",
     displayAsk_8: "19.10",
     
-    stockName_9: "THAIBEV19",
+    symbol_9: "THAIBEV19",
     displayNewImage_9: "https://img2.pic.in.th/pic/New8946469a7400e5eb.png",
     displayValue_9: "18.90",
     displayChange_9: "+ 1.07 %",
@@ -78,7 +78,7 @@ export async function GET() {
     displayBid_9: "18.90",
     displayAsk_9: "19.10",
     
-    stockName_10: "DBS19",
+    symbol_10: "DBS19",
     displayNewImage_10: "https://img2.pic.in.th/pic/New8946469a7400e5eb.png",
     displayValue_10: "18.90",
     displayChange_10: "+ 1.07 %",

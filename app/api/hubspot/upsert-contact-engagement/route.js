@@ -10,52 +10,116 @@ const headers = {
   Authorization: `Bearer ${accessToken}`,
   'Content-Type': 'application/json',
 };
+const marketingContactStatus = true;
 
 const apiUrlCreate = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create';
 const apiUrlUpdate = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update';
-const apiUrlSearch = 'https://api.hubapi.com/crm/v3/objects/contacts/search';
+const apiUrlSearch = `https://api.hubapi.com/crm/v3/objects/contacts/search`;
 const engagementApiUrl = 'https://api.hubapi.com/engagements/v1/engagements';
 
-const searchContactByEmail = async (email) => {
+const searchAndUpdateContactByEmailOrPhone = async (email = null, phone = null) => {
+  const filters = [];
+  
+  if (email) {
+    filters.push(
+      {
+        "filters": [
+          {
+            "propertyName": "email",
+            "value": email,
+            "operator": "EQ"
+          },
+        ]
+      });
+  }
+
+  if (phone) {
+    filters.push({
+      "filters": [
+        {
+          "propertyName": "phone",
+          "value": phone,
+          "operator": "EQ"
+        }
+      ]
+    });
+  }
+
+  if (filters.length === 0) {
+    console.error('Either email or phone must be provided');
+    return null;
+  }
+
   const payloadSearch = {
-    limit: 1,
+    limit: 2, // Return up to 2 contacts to handle duplicates
     after: '0',
     sorts: ['hs_object_id'],
-    properties: ['hs_object_id', 'campaign', 'all_campaigns', 'hs_marketable_status'],
-    filterGroups: [
-      {
-        filters: [
-          {
-            propertyName: 'email',
-            value: email,
-            operator: 'EQ',
-          },
-        ],
-      },
-    ],
+    properties: ['hs_object_id', 'lifecyclestage','createdate','hs_lastmodifieddate',],
+    properties: ['hs_object_id', 'campaign', 'all_campaigns', 'hs_marketable_status', 'lifecyclestage','hs_legal_basis','old_hs_legal_basis','themis_consent_status','createdate','hs_lastmodifieddate',],
+    filterGroups: filters,
   };
+
+  console.log("payloadSearch", JSON.stringify(payloadSearch, null, 2));
 
   try {
     const response = await axios.post(apiUrlSearch, payloadSearch, { headers });
-    if (response.data && response.data.results && response.data.results.length > 0) {
-      return response.data.results[0].id;
+    const results = response.data.results;
+    console.log("results", JSON.stringify(results, null, 2));
+    if (results.length === 0) {
+      console.log('No contact found');
+      return null;
     }
-    return null;
+
+    // Sort results by 'createdate' or 'hs_lastmodifieddate' to decide which to update
+    results.sort((a, b) => new Date(b.properties.createdate) - new Date(a.properties.createdate));
+    
+    // Update the first contact found
+    const contactToUpdate = results[0];
+    console.log("Search contact:", contactToUpdate.id);
+
+    return contactToUpdate.id;
   } catch (error) {
-    console.error('Error fetching data:', error);
+    console.error('Error fetching or updating contacts:', error);
     return null;
   }
 };
 
-const createUser = async (email, campaign) => {
+const createUser = async (email = null, phone = null, customerStatus = null, campaign) => {
+
+  let properties = {
+    campaign: campaign,
+    lifecyclestage: customerStatus,
+    hs_marketable_status: marketingContactStatus,
+    themis_consent_status: "Success",
+    themis_update_status: "New Consent",
+    hs_legal_basis: "Freely given consent from contact"
+  };
+
+  if (phone) {
+    properties.phone = phone;
+  }
+
+  if (email) {
+    properties.email = email;
+  }
+
+  let lifecyclestage = "subscriber";
+  if (customerStatus) {
+    if (customerStatus === 'Member') {
+      lifecyclestage = "249323405";
+    } else if (customerStatus === 'Customer') {
+      lifecyclestage = "customer";
+    } else if (customerStatus === 'Investor') {
+      lifecyclestage = "249313422";
+    }
+  }
+
+  properties.lifecyclestage = lifecyclestage;
+
   const contactPayload = {
     inputs: [
       {
-        properties: {
-          campaign: campaign,
-          email: email,
-          hs_marketable_status: "true",
-        },
+        properties: properties,
         createdAt: `${moment().format('YYYY-MM-DD')}`,
         updatedAt: `${moment().format('YYYY-MM-DD')}`,
         archived: false,
@@ -73,14 +137,20 @@ const createUser = async (email, campaign) => {
   }
 };
 
-const updateUser = async (contactId, campaign) => {
+const updateUser = async (contactId, email, phone, customerStatus, campaign) => {
   const contactPayload = {
     inputs: [
       {
         id: contactId,
         properties: {
           campaign: campaign,
-          hs_marketable_status: "true",
+          hs_marketable_status: marketingContactStatus,
+          themis_consent_status: "Success",
+          themis_update_status: "New Consent",
+          hs_legal_basis: "Freely given consent from contact",
+          phone: phone,
+          email: email,
+          lifecyclestage: customerStatus,
         },
         updatedAt: `${moment().format('YYYY-MM-DD')}`,
       },
@@ -95,7 +165,7 @@ const updateUser = async (contactId, campaign) => {
   }
 };
 
-const createEngagementTypeNote = async (contactId, action, campaign) => {
+const createEngagementTypeNote = async (contactId, action = null, campaign) => {
   const engagementPayload = {
     engagement: {
       active: true,
@@ -106,7 +176,7 @@ const createEngagementTypeNote = async (contactId, action, campaign) => {
       contactIds: [contactId],
     },
     metadata: {
-      body: `${action}|${moment().format('YYYY-MM-DD HH:mm:ss')}|${campaign}`,
+      body: `${action ? 'Subscriber' : action}|${moment().format('YYYY-MM-DD HH:mm:ss')}|${campaign}`,
     },
   };
 
@@ -118,19 +188,19 @@ const createEngagementTypeNote = async (contactId, action, campaign) => {
   }
 };
 
-const apiSyncDataContactEngagement = async (email, action, campaign) => {
+const apiSyncDataContactEngagement = async (email, phone, customerStatus, action, campaign) => {
   try {
-    if (!email || !action || !campaign) {
+    if ((!email && !phone) || !campaign) {
       console.log('========= BAD Request =========');
       return;
     }
 
-    let contactId = await searchContactByEmail(email);
+    let contactId = await searchAndUpdateContactByEmailOrPhone(email, phone);
 
     if (contactId) {
-      await updateUser(contactId, campaign);
+      await updateUser(contactId, email, phone, customerStatus, campaign);
     } else {
-      contactId = await createUser(email, campaign);
+      contactId = await createUser(email, phone, customerStatus, campaign);
     }
 
     await createEngagementTypeNote(contactId, action, campaign);
@@ -142,9 +212,9 @@ const apiSyncDataContactEngagement = async (email, action, campaign) => {
 // API route handler using NextResponse
 export async function POST(request) {
   try {
-    const { email, action, campaign } = await request.json();  // Parse the incoming request body
+    const { email, phone, customerStatus, action, campaign } = await request.json();  // Parse the incoming request body
 
-    await apiSyncDataContactEngagement(email, action, campaign);
+    await apiSyncDataContactEngagement(email, phone, customerStatus, action, campaign);
 
     return NextResponse.json({ message: 'Success' }, { status: 200 });
   } catch (error) {

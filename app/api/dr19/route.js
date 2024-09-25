@@ -2,22 +2,24 @@ import { NextResponse } from 'next/server';
 import axios from 'axios';
 
 const urlDynamicMessage = process.env.CHATCONE_URL_DYNAMIC_MESSAGE;
-const apiKey = process.env.CHATCONE_API_KEY;
-const chanelKey = process.env.CHATCONE_CHANNEL_KEY;
+const CHATCONE_API_KEY = process.env.CHATCONE_API_KEY;
+const CHATCONE_CHANNEL_KEY = process.env.CHATCONE_CHANNEL_KEY;
+const VALID_CHATCONE_X_KEY = process.env.CHATCONE_KEY;
 
 const headers = {
-  'api_key': `${apiKey}`,
-  'channel_key': `${chanelKey}`,
+  'api_key': `${CHATCONE_API_KEY}`,
+  'channel_key': `${CHATCONE_CHANNEL_KEY}`,
   'Content-Type': 'application/json',
 };
-
-const chatConeNoti = async () => {
-  const flexMessage = {
+//628df5275a894c0335c3ff15
+//65e999f387daf4a47d3af1fa
+const chatConeNoti = async (customer_id, customer_type) => {
+  const payload = {
     "type": "CUSTOMER_ID",
-    "message_id": "65e999f387daf4a47d3af1fa",
+    "message_id": "628df5275a894c0335c3ff15",
     "data": [
       {
-        "customer_id": "customer_id",
+        "customer_id": `${customer_id}`,
 
         "symbol_1": "GOLD19",
         "displayNewImage_1": "",
@@ -182,17 +184,24 @@ const chatConeNoti = async () => {
     ]
   };
 
+  const response = await axios.post(urlDynamicMessage, payload, { headers });
+  console.log("response", JSON.stringify(response, null, 2));
 }
 
 export async function POST(req) {
   try {
-    
     const headers = Object.fromEntries(req.headers.entries());
-    console.log('Received chatcone header:', JSON.stringify(headers, null, 2));
-    const body = await req.json();
-    console.log('Received chatcone body:', JSON.stringify(body, null, 2));
 
-    await chatConeNoti();
+    const { customer_id, customer_type } = headers;
+
+    const chatconeXKey = headers['chatcone-x-key'];
+
+    if (!chatconeXKey || chatconeXKey !== VALID_CHATCONE_X_KEY) {
+      console.error('Invalid or missing chatcone-x-key header');
+      return NextResponse.json({ status: 'error', message: 'Unauthorized' }, { status: 401 });
+    }
+
+    await chatConeNoti(customer_id, customer_type);
 
     return NextResponse.json({ message: 'Success' }, { status: 200 });
   } catch (error) {

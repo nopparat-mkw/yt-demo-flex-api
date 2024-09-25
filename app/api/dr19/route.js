@@ -192,9 +192,10 @@ export async function POST(req) {
   try {
     const headers = Object.fromEntries(req.headers.entries());
 
-    const { customer_id, customer_type } = headers;
-
-    const chatconeXKey = headers['chatcone-x-key'];
+    // Log the full headers object
+    console.log('Headers:', headers);
+    
+    const { customer_id, customer_type, chatconeXKey } = headers;
 
     if (!chatconeXKey || chatconeXKey !== VALID_CHATCONE_X_KEY) {
       console.error('Invalid or missing chatcone-x-key header');

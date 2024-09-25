@@ -194,10 +194,10 @@ export async function POST(req) {
 
     // Log the full headers object
     console.log('Headers:', headers);
-    
-    const { customer_id, customer_type, chatconeXKey } = headers;
 
-    if (!chatconeXKey || chatconeXKey !== VALID_CHATCONE_X_KEY) {
+    const { customer_id, customer_type, chatconexkey } = headers;
+
+    if (!chatconexkey || chatconexkey !== VALID_CHATCONE_X_KEY) {
       console.error('Invalid or missing chatcone-x-key header');
       return NextResponse.json({ status: 'error', message: 'Unauthorized' }, { status: 401 });
     }

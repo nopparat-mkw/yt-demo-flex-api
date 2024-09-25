@@ -6,7 +6,7 @@ const CHATCONE_API_KEY = process.env.CHATCONE_API_KEY;
 const CHATCONE_CHANNEL_KEY = process.env.CHATCONE_CHANNEL_KEY;
 const VALID_CHATCONE_X_KEY = process.env.CHATCONE_KEY;
 
-const headers = {
+const reqHeaders = {
   'api_key': `${CHATCONE_API_KEY}`,
   'channel_key': `${CHATCONE_CHANNEL_KEY}`,
   'Content-Type': 'application/json',
@@ -184,7 +184,7 @@ const chatConeNoti = async (customer_id, customer_type) => {
     ]
   };
 
-  const response = await axios.post(urlDynamicMessage, payload, { headers });
+  const response = await axios.post(urlDynamicMessage, payload, { reqHeaders });
   console.log("response", JSON.stringify(response, null, 2));
 }
 

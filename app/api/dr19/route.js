@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import axios from 'axios';
+import { NextResponse } from "next/server";
+import axios from "axios";
 
 const urlDynamicMessage = process.env.CHATCONE_URL_DYNAMIC_MESSAGE;
 const CHATCONE_API_KEY = process.env.CHATCONE_API_KEY;
@@ -7,16 +7,14 @@ const CHATCONE_CHANNEL_KEY = process.env.CHATCONE_CHANNEL_KEY;
 const VALID_CHATCONE_X_KEY = process.env.CHATCONE_KEY;
 
 const reqHeaders = {
-  'api_key': `${CHATCONE_API_KEY}`,
-  'channel_key': `${CHATCONE_CHANNEL_KEY}`,
-  'Content-Type': 'application/json',
+  api_key: `${CHATCONE_API_KEY}`,
+  channel_key: `${CHATCONE_CHANNEL_KEY}`,
 };
-//628df5275a894c0335c3ff15
-//65e999f387daf4a47d3af1fa
+
 const chatConeNoti = async (customer_id, customer_type) => {
   const payload = {
     "type": "CUSTOMER_ID",
-    "message_id": "628df5275a894c0335c3ff15",
+    "message_id": "65e999f387daf4a47d3af1fa",
     "data": [
       {
         "customer_id": `${customer_id}`,
@@ -28,7 +26,6 @@ const chatConeNoti = async (customer_id, customer_type) => {
         "displayChangeColor_1": "",
         "displayBid_1": "18.90",
         "displayAsk_1": "19.10",
-
         "symbol_2": "SMFG19",
         "displayNewImage_2": "",
         "displayValue_2": "18.90",
@@ -36,7 +33,6 @@ const chatConeNoti = async (customer_id, customer_type) => {
         "displayChangeColor_2": "",
         "displayBid_2": "18.90",
         "displayAsk_2": "19.10",
-
         "symbol_3": "VENTURE19",
         "displayNewImage_3": "",
         "displayValue_3": "18.90",
@@ -44,7 +40,6 @@ const chatConeNoti = async (customer_id, customer_type) => {
         "displayChangeColor_3": "",
         "displayBid_3": "18.90",
         "displayAsk_3": "19.10",
-
         "symbol_4": "STEG19",
         "displayNewImage_4": "",
         "displayValue_4": "18.90",
@@ -52,7 +47,6 @@ const chatConeNoti = async (customer_id, customer_type) => {
         "displayChangeColor_4": "",
         "displayBid_4": "18.90",
         "displayAsk_4": "19.10",
-
         "symbol_5": "SIA19",
         "displayNewImage_5": "",
         "displayValue_5": "18.90",
@@ -60,7 +54,6 @@ const chatConeNoti = async (customer_id, customer_type) => {
         "displayChangeColor_5": "",
         "displayBid_5": "18.90",
         "displayAsk_5": "19.10",
-
         "symbol_6": "NINTENDO19",
         "displayNewImage_6": "",
         "displayValue_6": "18.90",
@@ -68,7 +61,6 @@ const chatConeNoti = async (customer_id, customer_type) => {
         "displayChangeColor_6": "",
         "displayBid_6": "18.90",
         "displayAsk_6": "19.10",
-
         "symbol_7": "INDIAESG19",
         "displayNewImage_7": "",
         "displayValue_7": "18.90",
@@ -76,7 +68,6 @@ const chatConeNoti = async (customer_id, customer_type) => {
         "displayChangeColor_7": "",
         "displayBid_7": "18.90",
         "displayAsk_7": "19.10",
-
         "symbol_8": "UOB19",
         "displayNewImage_8": "https://img2.pic.in.th/pic/New8946469a7400e5eb.png",
         "displayValue_8": "18.90",
@@ -84,7 +75,6 @@ const chatConeNoti = async (customer_id, customer_type) => {
         "displayChangeColor_8": "",
         "displayBid_8": "18.90",
         "displayAsk_8": "19.10",
-
         "symbol_9": "THAIBEV19",
         "displayNewImage_9": "https://img2.pic.in.th/pic/New8946469a7400e5eb.png",
         "displayValue_9": "18.90",
@@ -92,7 +82,6 @@ const chatConeNoti = async (customer_id, customer_type) => {
         "displayChangeColor_9": "",
         "displayBid_9": "18.90",
         "displayAsk_9": "19.10",
-
         "symbol_10": "DBS19",
         "displayNewImage_10": "https://img2.pic.in.th/pic/New8946469a7400e5eb.png",
         "displayValue_10": "18.90",
@@ -100,7 +89,6 @@ const chatConeNoti = async (customer_id, customer_type) => {
         "displayChangeColor_10": "",
         "displayBid_10": "18.90",
         "displayAsk_10": "19.10",
-
         "symbol_11": "",
         "displayNewImage_11": "",
         "displayValue_11": "",
@@ -108,7 +96,6 @@ const chatConeNoti = async (customer_id, customer_type) => {
         "displayChangeColor_11": "",
         "displayBid_11": "",
         "displayAsk_11": "",
-
         "symbol_12": "",
         "displayNewImage_12": "",
         "displayValue_12": "",
@@ -116,7 +103,6 @@ const chatConeNoti = async (customer_id, customer_type) => {
         "displayChangeColor_12": "",
         "displayBid_12": "",
         "displayAsk_12": "",
-
         "symbol_13": "",
         "displayNewImage_13": "",
         "displayValue_13": "",
@@ -124,7 +110,6 @@ const chatConeNoti = async (customer_id, customer_type) => {
         "displayChangeColor_13": "",
         "displayBid_13": "",
         "displayAsk_13": "",
-
         "symbol_14": "",
         "displayNewImage_14": "",
         "displayValue_14": "",
@@ -132,7 +117,6 @@ const chatConeNoti = async (customer_id, customer_type) => {
         "displayChangeColor_14": "",
         "displayBid_14": "",
         "displayAsk_14": "",
-
         "symbol_15": "",
         "displayNewImage_15": "",
         "displayValue_15": "",
@@ -140,7 +124,6 @@ const chatConeNoti = async (customer_id, customer_type) => {
         "displayChangeColor_15": "",
         "displayBid_15": "",
         "displayAsk_15": "",
-
         "symbol_16": "",
         "displayNewImage_16": "",
         "displayValue_16": "",
@@ -148,7 +131,6 @@ const chatConeNoti = async (customer_id, customer_type) => {
         "displayChangeColor_16": "",
         "displayBid_16": "",
         "displayAsk_16": "",
-
         "symbol_17": "",
         "displayNewImage_17": "",
         "displayValue_17": "",
@@ -156,7 +138,6 @@ const chatConeNoti = async (customer_id, customer_type) => {
         "displayChangeColor_17": "",
         "displayBid_17": "",
         "displayAsk_17": "",
-
         "symbol_18": "",
         "displayNewImage_18": "",
         "displayValue_18": "",
@@ -164,7 +145,6 @@ const chatConeNoti = async (customer_id, customer_type) => {
         "displayChangeColor_18": "",
         "displayBid_18": "",
         "displayAsk_18": "",
-
         "symbol_19": "",
         "displayNewImage_19": "",
         "displayValue_19": "",
@@ -172,7 +152,6 @@ const chatConeNoti = async (customer_id, customer_type) => {
         "displayChangeColor_19": "",
         "displayBid_19": "",
         "displayAsk_19": "",
-
         "symbol_20": "",
         "displayNewImage_20": "",
         "displayValue_20": "",
@@ -184,32 +163,40 @@ const chatConeNoti = async (customer_id, customer_type) => {
     ]
   };
 
-  const response = await axios.post(urlDynamicMessage, payload, { reqHeaders });
-  console.log("response", JSON.stringify(response, null, 2));
-}
+  try {
+    const response = await axios.post(urlDynamicMessage, payload, { reqHeaders });
+    console.log("Response result:", response.data);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 export async function POST(req) {
   try {
     const headers = Object.fromEntries(req.headers.entries());
 
-    // Log the full headers object
-    console.log('Headers:', headers);
-
     const { customer_id, customer_type, chatconexkey } = headers;
 
+    console.log("Received customer_id:", customer_id);
+    console.log("Received customer_type:", customer_type);
+    console.log("Received chatconexkey:", chatconexkey);
+
     if (!chatconexkey || chatconexkey !== VALID_CHATCONE_X_KEY) {
-      console.error('Invalid or missing chatcone-x-key header');
-      return NextResponse.json({ status: 'error', message: 'Unauthorized' }, { status: 401 });
+      console.error("Invalid or missing chatcone-x-key header");
+      return NextResponse.json({ status: "error", message: "Unauthorized" }, { status: 401 });
     }
 
     await chatConeNoti(customer_id, customer_type);
 
-    return NextResponse.json({ message: 'Success' }, { status: 200 });
+    return NextResponse.json({ message: "Success" }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: 'An error occurred', error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { message: "An error occurred", error: error.message },
+      { status: 500 }
+    );
   }
 }
 
 export async function GET() {
-  return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 });
+  return NextResponse.json({ message: "Method Not Allowed" }, { status: 405 });
 }

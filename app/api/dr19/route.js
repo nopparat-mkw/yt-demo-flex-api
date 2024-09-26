@@ -11,10 +11,12 @@ const reqHeaders = {
   channel_key: `${CHATCONE_CHANNEL_KEY}`,
 };
 
+const messageId = '66e7e6a3236b483519bf7022';
+
 const chatConeNoti = async (customer_id, customer_type) => {
   const payload = {
     "type": "CUSTOMER_ID",
-    "message_id": "65e999f387daf4a47d3af1fa",
+    "message_id": `${messageId}`,
     "data": [
       {
         "customer_id": `${customer_id}`,

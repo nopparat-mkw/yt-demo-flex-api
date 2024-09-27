@@ -164,7 +164,7 @@ const chatConeNoti = async (customer_id, customer_type) => {
       }
     ]
   };
-
+  console.log('payload:', payload);
   try {
     const response = await axios.post(urlDynamicMessage, payload, { reqHeaders });
     console.log("Response result:", response.data);

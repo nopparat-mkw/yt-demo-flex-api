@@ -13,11 +13,11 @@ const fetchData = async (contentType, limit) => {
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const contentType = searchParams.get("content") || "";
-  const limit = parseInt(searchParams.get("limit"), 20) || 20;
+  const limitParameter = parseInt(searchParams.get("limit"), 10) || 20;
+  const limit = limitParameter > 20 || limitParameter <= 0 ? 20 : limitParameter;
 
   const items = await fetchData(contentType, limit);
 
-//   <media:thumbnail url="${item.thumbnail}" />
   const rssItems = items.map((item) => `
         <item>
             <title>${item.title}</title>
@@ -39,7 +39,7 @@ export async function GET(req) {
         <language>th</language>
         <copyright>Copyright 2016 Yuanta Securities (Thailand). All Rights Reserved.</copyright>
         <pubDate>${new Date().toUTCString()}</pubDate>
-        <ttl>20</ttl>
+        <ttl>${limit}</ttl>
         ${rssItems}
       </channel>
     </rss>
@@ -47,7 +47,7 @@ export async function GET(req) {
 
   return new NextResponse(rssFeed, {
     headers: {
-      "Content-Type": "application/rss+xml; charset=utf-8",
+      "Content-Type": "text/xml; charset=utf-8",
     },
   });
 }

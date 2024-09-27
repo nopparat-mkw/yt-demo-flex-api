@@ -17,6 +17,7 @@ export async function GET(req) {
 
   const items = await fetchData(contentType, limit);
 
+//   <media:thumbnail url="${item.thumbnail}" />
   const rssItems = items.map((item) => `
         <item>
             <title>${item.title}</title>
@@ -25,9 +26,8 @@ export async function GET(req) {
             <description>${item.description}</description>
             <enclosure url="${item.enclosure}" type="image/jpeg"/>
             <pubDate>${new Date(item.publishedDate).toUTCString()}</pubDate>
-            <media:thumbnail url="${item.thumbnail}" />
         </item>
-    `).join("");
+    `).join("").trim();
 
   const rssFeed = `
     <?xml version="1.0" encoding="UTF-8" ?>
@@ -37,11 +37,13 @@ export async function GET(req) {
         <link>https://yuanta.co.th/</link>
         <description>Latest data from rss</description>
         <language>th</language>
+        <copyright>Copyright 2016 Yuanta Securities (Thailand). All Rights Reserved.</copyright>
         <pubDate>${new Date().toUTCString()}</pubDate>
+        <ttl>20</ttl>
         ${rssItems}
       </channel>
     </rss>
-  `;
+  `.trim();
 
   return new NextResponse(rssFeed, {
     headers: {

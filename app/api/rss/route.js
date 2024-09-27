@@ -1,27 +1,40 @@
-import { NextResponse } from 'next/server';
-import { fetchDrContents } from '../../../lib/drContent';  // ดึงข้อมูลจาก lib
+import { NextResponse } from "next/server";
+import { fetchDrContents, fetchBlogYuanta } from "../../../lib/rssData"; // ดึงข้อมูลจาก lib
 
-export async function GET() {
-  const items = await fetchDrContents();
+const fetchData = async (contentType, limit) => {
+    switch(contentType) {
+      case "dr":
+          return  await fetchDrContents(limit);
+      default:
+        return await fetchBlogYuanta(limit);
+    }
+}
 
-  const rssItems = items.map(item => `
-    <item>
-      <title>${item.title}</title>
-      <guid isPermaLink="true">${item.link}</guid>
-      <link>${item.link}</link>
-      <description>${item.description}</description>
-      <enclosure url="${item.enclosure}" type="image/jpeg"/>
-      <pubDate>${new Date(item.publishedDate).toUTCString()}</pubDate>
-      <media:thumbnail url="${item.thumbnail}" />
-    </item>
-  `).join('');
+export async function GET(req) {
+  const { searchParams } = new URL(req.url);
+  const contentType = searchParams.get("content") || "";
+  const limit = parseInt(searchParams.get("limit"), 20) || 20;
+
+  const items = await fetchData(contentType, limit);
+
+  const rssItems = items.map((item) => `
+        <item>
+            <title>${item.title}</title>
+            <guid isPermaLink="true">${item.link}</guid>
+            <link>${item.link}</link>
+            <description>${item.description}</description>
+            <enclosure url="${item.enclosure}" type="image/jpeg"/>
+            <pubDate>${new Date(item.publishedDate).toUTCString()}</pubDate>
+            <media:thumbnail url="${item.thumbnail}" />
+        </item>
+    `).join("");
 
   const rssFeed = `
     <?xml version="1.0" encoding="UTF-8" ?>
     <rss version="2.0">
       <channel>
         <title>RSS Feed</title>
-        <link>https://dr.yuanta.co.th/</link>
+        <link>https://yuanta.co.th/</link>
         <description>Latest data from rss</description>
         <language>th</language>
         <pubDate>${new Date().toUTCString()}</pubDate>
@@ -32,8 +45,7 @@ export async function GET() {
 
   return new NextResponse(rssFeed, {
     headers: {
-      'Content-Type': 'application/rss+xml; charset=utf-8',
-    //   'Content-Type': 'text/xml; charset=utf-8',
+      "Content-Type": "application/rss+xml; charset=utf-8",
     },
   });
 }

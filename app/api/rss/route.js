@@ -29,6 +29,9 @@ export async function GET(req) {
             <image_link>${item.enclosure}</image_link>
             <pubDate>${new Date(item.publishedDate).toUTCString()}</pubDate>
             <price>0.01 THB</price>
+            <availability>in stock</availability>
+            <condition>new</condition>
+            <brand>Yuanta</brand>
         </item>
     `).join("").trim();
 

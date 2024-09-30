@@ -18,8 +18,9 @@ export async function GET(req) {
 
   const items = await fetchData(contentType, limit);
 
-  const rssItems = items.map((item) => `
+  const rssItems = items.map((item, index) => `
         <item>
+            <id>${index}</id>        
             <title>${item.title}</title>
             <guid isPermaLink="true">${item.link}</guid>
             <link>${item.link}</link>

@@ -26,8 +26,9 @@ export async function GET(req) {
             <link>${item.link}</link>
             <description>${item.description}</description>
             <enclosure url="${item.enclosure}" type="image/jpeg"/>
+            <image_link>${item.enclosure}</image_link>
             <pubDate>${new Date(item.publishedDate).toUTCString()}</pubDate>
-            <price>0.01</price>
+            <price>0.01 THB</price>
         </item>
     `).join("").trim();
 

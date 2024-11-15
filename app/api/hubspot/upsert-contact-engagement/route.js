@@ -54,7 +54,7 @@ const searchAndUpdateContactByEmailOrPhone = async (email = null, phone = null) 
     after: '0',
     sorts: ['hs_object_id'],
     // properties: ['hs_object_id', 'lifecyclestage','createdate','hs_lastmodifieddate',],
-    properties: ['hs_object_id', 'campaign', 'all_campaigns', 'hs_marketable_status', 'lifecyclestage','hs_legal_basis','old_hs_legal_basis','themis_consent_status','createdate','hs_lastmodifieddate','ic_cc_email','open_account_channel'],
+    properties: ['hs_object_id', 'campaign', 'all_campaigns', 'hs_marketable_status', 'lifecyclestage','hs_legal_basis','old_hs_legal_basis','themis_consent_status','createdate','hs_lastmodifieddate','ic_code','ic_cc_email','open_account_channel'],
     filterGroups: filters,
   };
 
@@ -93,7 +93,11 @@ const createUser = async (email = null, phone = null, customerStatus = null, cam
     themis_update_status: "New Consent",
     hs_legal_basis: "Freely given consent from contact",
     ic_cc_email: icCcEmail,
-    open_account_channel: openAccountChannel
+    open_account_channel: openAccountChannel,
+    ic_code: '601176',
+    yt_user_status: 'Investor',
+    yt_open_account_date: '',
+    yt_last_trade_date: '',
   };
 
   if (phone) {
@@ -141,6 +145,11 @@ const createUser = async (email = null, phone = null, customerStatus = null, cam
 const updateUser = async (contactId, email = null, phone = null, customerStatus = null, campaign, icCcEmail = null, openAccountChannel = null) => {
   let properties = {
     campaign: campaign,
+    ic_code: '601176',
+    open_aomwise_flag: 'true',
+    yt_user_status: 'Investor',
+    yt_open_account_date: '2024-09-27',
+    yt_last_trade_date: '',
   };
 
   if (phone) {

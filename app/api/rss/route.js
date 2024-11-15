@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { fetchDrContents, fetchBlogYuanta } from "../../../lib/rssData"; // ดึงข้อมูลจาก lib
 
-const fetchData = async (contentType, limit) => {
-    switch(contentType) {
+const fetchData = async (category, limit) => {
+    switch(category) {
       case "dr":
           return  await fetchDrContents(limit);
       default:
@@ -12,11 +12,11 @@ const fetchData = async (contentType, limit) => {
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
-  const contentType = searchParams.get("content") || "";
+  const category = searchParams.get("category") || "";
   const limitParameter = parseInt(searchParams.get("limit"), 10) || 20;
   const limit = limitParameter > 20 || limitParameter <= 0 ? 20 : limitParameter;
 
-  const items = await fetchData(contentType, limit);
+  const items = await fetchData(category, limit);
 
   const rssItems = items.map((item, index) => `
         <item>
